@@ -88,3 +88,5 @@ This PHP file retrieves the guest ID for a given room number and returns it as a
 If a guest is found, returns { "success": true, "guest_id": 123 }.
 If no guest is found, returns { "success": false, "error": "No guest found for this room" }.
 If room_number is missing, returns { "success": false, "error": "Room number is required" }.
+
+update_menu_price.php
