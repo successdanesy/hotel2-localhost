@@ -3,18 +3,28 @@ document.addEventListener("DOMContentLoaded", function () {
     const priceDisplay = document.getElementById("current_price");
     const menuSelect = document.getElementById("menu_item");
 
-    // When a menu item is selected, set its default price
+    // ✅ When a menu item is selected, update the price span
     menuSelect.addEventListener("change", function () {
         let selectedOption = menuSelect.options[menuSelect.selectedIndex];
-        let menuId = selectedOption.value;
-        let price = parseFloat(selectedOption.dataset.price) || 0;
 
-        priceDisplay.dataset.menuId = menuId; // Store the item ID
-        priceDisplay.textContent = `₦${price.toLocaleString()}`;
-        priceDisplay.dataset.originalPrice = price; // ✅ Store default price
+        if (selectedOption.value) { // If a valid selection is made
+            let menuId = selectedOption.value; // Get the menu item ID
+            let price = parseFloat(selectedOption.dataset.price) || 0; // Get the price
+
+            // ✅ Update the span with the correct price
+            priceDisplay.dataset.menuId = menuId;
+            priceDisplay.dataset.originalPrice = price; // Store the original price
+            priceDisplay.textContent = `₦${price.toLocaleString()}`;
+        } else {
+            // ✅ Reset display if no item is selected
+            priceDisplay.textContent = "₦0";
+            priceDisplay.dataset.menuId = "";
+            priceDisplay.dataset.originalPrice = "0";
+        }
     });
 
-    // Handle price adjustment buttons
+
+    // ✅ Handle increment/decrement buttons
     document.querySelectorAll(".adjust-price").forEach(button => {
         button.addEventListener("click", function () {
             let menuId = priceDisplay.dataset.menuId;
@@ -24,16 +34,16 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             let changeAmount = parseInt(this.dataset.amount);
-            updatePrice(menuId, changeAmount);
+            let originalPrice = parseFloat(priceDisplay.dataset.originalPrice) || 0;
+            let currentPrice = parseFloat(priceDisplay.textContent.replace("₦", "").replace(",", ""));
+
+            // ✅ Ensure adjustments apply to the original price, not starting from 0
+            let newPrice = Math.max(0, (currentPrice === 0 ? originalPrice : currentPrice) + changeAmount);
+            
+            priceDisplay.textContent = `₦${newPrice.toLocaleString()}`;
         });
     });
 
-    function updatePrice(menuId, amount) {
-        let currentPrice = parseFloat(priceDisplay.textContent.replace("₦", "").replace(",", ""));
-        let newPrice = Math.max(0, currentPrice + amount);
-
-        priceDisplay.textContent = `₦${newPrice.toLocaleString()}`;
-    }
 
     // ✅ Ensure price is taken from the price display when adding to tray
     document.getElementById("addToTray").addEventListener("click", () => {
@@ -54,6 +64,7 @@ document.addEventListener("DOMContentLoaded", function () {
         addItemToTray(menuItemId, menuItemText, finalPrice, specialInstructions);
     });
 });
+
 
 
 
