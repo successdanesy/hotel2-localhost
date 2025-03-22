@@ -205,10 +205,32 @@ $orders = fetchOrders($conn, $selected_date);
             </div>
             <div class="form-group">
                 <label for="menu_item">Menu Item:</label>
-                <select id="menu_item" required>
-                    <option value="">-- Select Menu Item --</option>
-                </select>
+                <select id="menu_item" name="menu_item">
+    <option value="">-- Select Menu Item --</option>
+    <?php foreach ($menuItems as $item): ?>
+        <option value="<?= $item['id'] ?>" data-price="<?= $item['price'] ?>">
+            <?= htmlspecialchars($item['name']) ?> - ₦<?= number_format($item['price'], 2) ?>
+        </option>
+    <?php endforeach; ?>
+</select>
+
             </div>
+
+            <div class="price-adjustment">
+    <button type="button" class="adjust-price" data-amount="-500">-500</button>
+    <button type="button" class="adjust-price" data-amount="-200">-200</button>
+    <button type="button" class="adjust-price" data-amount="-100">-100</button>
+    <button type="button" class="adjust-price" data-amount="-50">-50</button>
+
+    <span id="current_price" data-menu-id="">₦0</span> <!-- Updated dynamically -->
+
+    <button type="button" class="adjust-price" data-amount="50">+50</button>
+    <button type="button" class="adjust-price" data-amount="100">+100</button>
+    <button type="button" class="adjust-price" data-amount="200">+200</button>
+    <button type="button" class="adjust-price" data-amount="500">+500</button>
+</div>
+
+
             <div class="form-group">
                 <label for="special_instructions">Special Instructions:</label>
                 <textarea id="special_instructions" name="special_instructions" placeholder="Add any instructions..."></textarea>
