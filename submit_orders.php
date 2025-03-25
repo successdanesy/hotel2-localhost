@@ -20,18 +20,24 @@ try {
         foreach ($orders as $order) {
             $menuItemId = $order['menuItemId'];
             $menuItemText = $order['menuItemText'];
-            $price = $order['price']; // ✅ Now using the updated price!
+            $quantity = $order['quantity'];  // ✅ Get quantity from the order
+            $price = $order['price'];
+            $status = 'Pending';  // ✅ Define status
 
-            // Insert order into the database
-            $query = "INSERT INTO kitchen_orders 
-          (room_number, order_description, status, timestamp, total_amount, special_instructions, guest_id, guest_type) 
-          VALUES (?, ?, 'Pending', NOW(), ?, ?, ?, ?)";
+            // ✅ Prepare the query
+            $query = "INSERT INTO kitchen_orders (room_number, order_description, quantity, status, timestamp, total_amount, special_instructions, guest_id, guest_type) 
+                      VALUES (?, ?, ?, ?, NOW(), ?, ?, ?, ?)";
             $stmt = $conn->prepare($query);
-            $stmt->bind_param("ssdsds", $roomNumber, $menuItemText, $price, $specialInstructions, $guestId, $guestType);
+            if (!$stmt) {
+                throw new Exception('Query Preparation Failed: ' . $conn->error);
+            }
 
+            // ✅ Bind parameters correctly
+            $stmt->bind_param('ssisdsds', $roomNumber, $menuItemText, $quantity, $status, $price, $specialInstructions, $guestId, $guestType);
 
+            // ✅ Execute and check for errors
             if (!$stmt->execute()) {
-                throw new Exception('Failed to add the order: ' . $stmt->error);
+                throw new Exception('SQL Execution Failed: ' . $stmt->error);
             }
             $stmt->close();
         }

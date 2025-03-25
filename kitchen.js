@@ -3,57 +3,42 @@ document.addEventListener("DOMContentLoaded", function () {
     const priceDisplay = document.getElementById("current_price");
     const menuSelect = document.getElementById("menu_item");
 
-    // When a menu item is selected, set its default price
+    // ✅ When a menu item is selected, reset price to ₦0
     menuSelect.addEventListener("change", function () {
-        let selectedOption = menuSelect.options[menuSelect.selectedIndex];
-        let menuId = selectedOption.value;
-        let price = parseFloat(selectedOption.dataset.price) || 0;
-
-        priceDisplay.dataset.menuId = menuId; // Store the item ID
-        priceDisplay.textContent = `₦${price.toLocaleString()}`;
-        priceDisplay.dataset.originalPrice = price; // ✅ Store default price
+        if (menuSelect.value) { 
+            priceDisplay.textContent = "₦0"; // Start from zero
+        } else {
+            priceDisplay.textContent = "₦0"; // Reset if no item is selected
+        }
     });
 
-    // Handle price adjustment buttons
+    // ✅ Handle price increment and decrement
     document.querySelectorAll(".adjust-price").forEach(button => {
         button.addEventListener("click", function () {
-            let menuId = priceDisplay.dataset.menuId;
-            if (!menuId) {
-                alert("Please select a menu item first!");
-                return;
-            }
-
             let changeAmount = parseInt(this.dataset.amount);
-            updatePrice(menuId, changeAmount);
+            let currentPrice = parseFloat(priceDisplay.textContent.replace("₦", "").replace(",", "")) || 0;
+
+            let newPrice = Math.max(0, currentPrice + changeAmount);
+            priceDisplay.textContent = `₦${newPrice.toLocaleString()}`;
         });
     });
 
-    function updatePrice(menuId, amount) {
-        let currentPrice = parseFloat(priceDisplay.textContent.replace("₦", "").replace(",", ""));
-        let newPrice = Math.max(0, currentPrice + amount);
+    // ✅ Ensure price is included when adding to tray
+    // document.getElementById("addToTray").addEventListener("click", () => {
+    //     let menuItemId = menuSelect.value;
+    //     let menuItemText = menuSelect.selectedOptions[0]?.textContent || "";
+    //     let specialInstructions = document.getElementById("special_instructions").value;
+    //     let displayedPrice = parseFloat(priceDisplay.textContent.replace("₦", "").replace(",", "")) || 0;
 
-        priceDisplay.textContent = `₦${newPrice.toLocaleString()}`;
-    }
+    //     if (!menuItemId) {
+    //         alert("Please select a menu item.");
+    //         return;
+    //     }
 
-    // ✅ Ensure price is taken from the price display when adding to tray
-    document.getElementById("addToTray").addEventListener("click", () => {
-        let menuItemId = menuSelect.value;
-        let menuItemText = menuSelect.selectedOptions[0]?.textContent || "";
-        let specialInstructions = document.getElementById("special_instructions").value;
-        
-        // ✅ Get the updated price or default price if unchanged
-        let displayedPrice = parseFloat(priceDisplay.textContent.replace("₦", "").replace(",", ""));
-        let defaultPrice = parseFloat(priceDisplay.dataset.originalPrice) || 0;
-        let finalPrice = displayedPrice > 0 ? displayedPrice : defaultPrice;
-
-        if (!menuItemId || isNaN(finalPrice) || finalPrice <= 0) {
-            alert("Please select a menu item and ensure the price is valid.");
-            return;
-        }
-
-        addItemToTray(menuItemId, menuItemText, finalPrice, specialInstructions);
-    });
+    //     addItemToTray(menuItemId, menuItemText, displayedPrice, specialInstructions);
+    // });
 });
+
 
 
 
@@ -102,50 +87,79 @@ function updateMenuItems(categoryId) {
         menuItemsByCategory[categoryId].forEach(item => {
             const option = document.createElement('option');
             option.value = item.id;
-            option.textContent = `${item.name} (₦${parseFloat(item.price).toFixed(2)})`;
+            option.textContent = item.name; // ✅ Only show item name, no price
             menuSelect.appendChild(option);
         });
     }
 }
+
 
 // Order Tray Logic
 const orderTray = [];
 const orderTrayTable = document.getElementById("orderTray").querySelector("tbody");
 
 document.getElementById("addToTray").addEventListener("click", () => {
-    const menuItemId = document.getElementById("menu_item").value;
-    const menuItemText = document.getElementById("menu_item").selectedOptions[0]?.textContent || "";
-    const specialInstructions = document.getElementById("special_instructions").value;
-    
-    // ✅ Get the updated price from the display
-    const updatedPrice = parseFloat(document.getElementById("current_price").textContent.replace("₦", "").replace(",", ""));
+    let menuItemId = document.getElementById("menu_item").value;
+    let menuItemText = document.getElementById("menu_item").selectedOptions[0]?.textContent || "";
+    let specialInstructions = document.getElementById("special_instructions").value;
+    let displayedPrice = parseFloat(document.getElementById("current_price").textContent.replace("₦", "").replace(",", "")) || 0;
 
-    if (!menuItemId || isNaN(updatedPrice)) {
-        alert("Please select a menu item and ensure the price is valid.");
+    if (!menuItemId) {
+        alert("Please select a menu item.");
         return;
     }
 
-    addItemToTray(menuItemId, menuItemText, updatedPrice, specialInstructions);
+    addItemToTray(menuItemId, menuItemText, displayedPrice, specialInstructions);
 });
 
+
 function addItemToTray(menuItemId, menuItemText, price, specialInstructions) {
-    orderTray.push({ menuItemId, menuItemText, price, specialInstructions });
+    // ✅ Check if the item is already in the tray
+    let existingItem = orderTray.find(item => item.menuItemId === menuItemId);
 
-    const row = document.createElement("tr");
-    row.innerHTML = `
-        <td>${menuItemText}</td>
-        <td>₦${price.toFixed(2)}</td>
-        <td>${specialInstructions}</td>
-        <td><button class="remove-item">Remove</button></td>
-    `;
-    orderTrayTable.appendChild(row);
+    if (existingItem) {
+        // ✅ If the item exists, increase the quantity
+        existingItem.quantity += 1;
+        existingItem.totalPrice += price;
 
-    // Remove item from tray when clicking "Remove"
+        // ✅ Update the quantity and price in the UI
+        let existingRow = document.getElementById(`row-${menuItemId}`);
+        existingRow.querySelector(".item-quantity").textContent = existingItem.quantity;
+        existingRow.querySelector(".item-price").textContent = `₦${existingItem.totalPrice.toLocaleString()}`;
+    } else {
+        // ✅ If the item is new, add it to the tray with quantity 1
+        let newItem = { menuItemId, menuItemText, price, totalPrice: price, specialInstructions, quantity: 1 };
+        orderTray.push(newItem);
+
+        const row = document.createElement("tr");
+        row.id = `row-${menuItemId}`;
+        row.innerHTML = `
+            <td>${menuItemText}</td>
+            <td class="item-quantity">1</td>
+            <td class="item-price">₦${price.toLocaleString()}</td>
+            <td>${specialInstructions}</td>
+            <td><button class="remove-item">Remove</button></td>
+        `;
+        orderTrayTable.appendChild(row);
+
+        // ✅ Remove item from tray when clicking the remove button
+        row.querySelector(".remove-item").addEventListener("click", () => {
+            let index = orderTray.findIndex(item => item.menuItemId === menuItemId);
+            if (index !== -1) {
+                orderTray.splice(index, 1);
+            }
+            row.remove();
+        });
+    }
+
+
+    // ✅ Remove item from tray
     row.querySelector(".remove-item").addEventListener("click", () => {
         orderTray.splice(orderTray.indexOf(menuItemId), 1);
         row.remove();
     });
 }
+
 
 // Submit Orders
 document.getElementById('submitOrders').addEventListener('click', () => {
