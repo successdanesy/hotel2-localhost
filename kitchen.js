@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
+
     // ✅ Handle price increment and decrement
     document.querySelectorAll(".adjust-price").forEach(button => {
         button.addEventListener("click", function () {
@@ -38,6 +39,7 @@ document.addEventListener("DOMContentLoaded", function () {
     //     addItemToTray(menuItemId, menuItemText, displayedPrice, specialInstructions);
     // });
 });
+
 
 
 

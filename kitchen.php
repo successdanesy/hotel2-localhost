@@ -225,7 +225,7 @@ $orders = fetchOrders($conn, $selected_date);
     <button type="button" class="adjust-price" data-amount="-100">-100</button>
     <button type="button" class="adjust-price" data-amount="-50">-50</button>
 
-    <span id="current_price" data-menu-id="">₦0</span> <!-- Updated dynamically -->
+    <span id="current_price" data-menu-id="" data-original-price="0">₦0</span>
 
     <button type="button" class="adjust-price" data-amount="50">+50</button>
     <button type="button" class="adjust-price" data-amount="100">+100</button>
