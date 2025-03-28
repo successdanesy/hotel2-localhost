@@ -11,12 +11,18 @@ function fetchOrders(selectedDate) {
         .then(data => {
             // Update the kitchen orders table
             const kitchenOrdersTable = document.getElementById('kitchen-orders');
-            kitchenOrdersTable.innerHTML = '<tr><th>Room Number</th><th>Order Description</th><th>Total Amount (₦)</th><th>Status</th><th>Special Instructions</th></tr>'; // Clear previous data
+            kitchenOrdersTable.innerHTML = '<tr><th>Room Number</th><th>Order Description</th><th>Quantity</th><th>Total Amount (₦)</th><th>Status</th><th>Special Instructions</th></tr>'; // Clear previous data
             if (data.kitchen.length > 0) {
                 data.kitchen.forEach(order => {
                     const row = kitchenOrdersTable.insertRow();
-                    row.innerHTML = `<td>${order.room_number}</td><td>${order.order_description}</td><td>${parseFloat(order.total_amount).toFixed(2)}</td><td>${order.status}</td><td>${order.special_instructions}</td>`;
+                    row.innerHTML = `<td>${order.room_number}</td>
+                                     <td>${order.order_description}</td>
+                                     <td>${order.quantity ?? 'N/A'}</td>  <!-- ✅ Added Quantity -->
+                                     <td>${parseFloat(order.total_amount).toFixed(2)}</td>
+                                     <td>${order.status}</td>
+                                     <td>${order.special_instructions}</td>`;
                 });
+                
             } else {
                 const row = kitchenOrdersTable.insertRow();
                 const cell = row.insertCell(0);
