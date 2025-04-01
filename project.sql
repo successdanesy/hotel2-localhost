@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost
--- Generation Time: Dec 26, 2024 at 04:40 PM
--- Server version: 10.4.28-MariaDB
--- PHP Version: 8.2.4
+-- Host: 127.0.0.1
+-- Generation Time: Apr 01, 2025 at 11:40 AM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.1.25
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -20,6 +20,8 @@ SET time_zone = "+00:00";
 --
 -- Database: `project`
 --
+CREATE DATABASE IF NOT EXISTS `project` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE `project`;
 
 -- --------------------------------------------------------
 
@@ -36,7 +38,8 @@ CREATE TABLE `bar_orders` (
   `total_amount` decimal(10,2) NOT NULL,
   `special_instructions` text DEFAULT NULL,
   `guest_id` int(11) DEFAULT NULL,
-  `guest_type` varchar(20) DEFAULT 'guest'
+  `guest_type` varchar(20) DEFAULT 'guest',
+  `quantity` int(11) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -177,7 +180,8 @@ CREATE TABLE `kitchen_orders` (
   `total_amount` decimal(10,2) NOT NULL,
   `special_instructions` text DEFAULT NULL,
   `guest_id` int(11) DEFAULT NULL,
-  `guest_type` varchar(20) DEFAULT 'guest'
+  `guest_type` varchar(20) DEFAULT 'guest',
+  `quantity` int(11) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -189,7 +193,6 @@ CREATE TABLE `kitchen_orders` (
 CREATE TABLE `menu_items` (
   `id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
-  `price` decimal(10,2) NOT NULL,
   `category_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -197,149 +200,149 @@ CREATE TABLE `menu_items` (
 -- Dumping data for table `menu_items`
 --
 
-INSERT INTO `menu_items` (`id`, `name`, `price`, `category_id`) VALUES
-(4, 'English Breakfast', 3500.00, 1),
-(5, 'French Breakfast', 4000.00, 1),
-(6, 'American Breakfast', 4000.00, 1),
-(7, 'Tacos', 3500.00, 1),
-(8, 'Fettuccine Alfredo', 4000.00, 1),
-(9, 'Egg Sandwich', 3500.00, 1),
-(10, 'Tomato with 3 eggs', 3500.00, 1),
-(11, 'Jollof Rice', 3000.00, 2),
-(12, 'White Rice', 2500.00, 2),
-(13, 'Basmatics White Rice', 2000.00, 2),
-(14, 'Fried Rice Coleslaw', 3000.00, 2),
-(15, 'Chinese Fried Rice', 6000.00, 2),
-(16, 'Coconut Rice', 3500.00, 2),
-(17, 'Palm Oil Rice/Dry Fish', 3500.00, 2),
-(18, 'Spaghetti Jollof', 3000.00, 2),
-(19, 'Porridge Beans/Plantain', 3500.00, 2),
-(20, 'Porridge Yam/Dry Fish', 3500.00, 2),
-(21, 'Jambalaya Rice', 7000.00, 2),
-(22, 'French Rice', 7000.00, 2),
-(23, 'Colombia Rice', 6000.00, 2),
-(24, 'Ghana Jollof Rice', 3500.00, 2),
-(25, 'Egg Rice', 3500.00, 2),
-(26, 'Egg Rice Special', 4000.00, 2),
-(27, 'Fried Rice Special', 5000.00, 2),
-(28, 'Ofada Rice/Sauce', 6500.00, 2),
-(29, 'Fried Rice Local', 6000.00, 2),
-(30, 'Jollof Spaghetti', 3000.00, 3),
-(31, 'Village Spaghetti', 3500.00, 3),
-(32, 'Spaghetti BTC', 4000.00, 3),
-(33, 'Chicken Spaghetti', 6000.00, 3),
-(34, 'Mix Spaghetti with Extra Vegetables', 6000.00, 3),
-(35, 'Spaghetti Bonolice', 6000.00, 3),
-(36, 'Seed Food Pasta', 8000.00, 3),
-(37, 'Sengapol Noodles', 6000.00, 4),
-(38, 'Indomie Chicken', 6000.00, 4),
-(39, 'Vegetable Noodles', 4000.00, 4),
-(40, 'Plain Noodles', 4000.00, 4),
-(41, 'Indomie with Sausage', 4000.00, 4),
-(42, 'Chicken Salad', 6500.00, 5),
-(43, 'Chicken Avocado', 7000.00, 5),
-(44, 'Salad', 1000.00, 5),
-(45, 'Russian Salad', 5000.00, 5),
-(46, 'Mix Broccoli Salad', 7000.00, 5),
-(47, 'Fish Salad', 5000.00, 5),
-(48, 'Fruit Salad', 6000.00, 5),
-(49, 'Egg Sauce', 2000.00, 6),
-(50, 'Red Oil Sauce', 2000.00, 6),
-(51, 'Vegetable Sauce', 2000.00, 6),
-(52, 'Chinese Sauce', 5000.00, 6),
-(53, 'Chicken Sauce', 5000.00, 6),
-(54, 'Goat Meat Sauce', 5000.00, 6),
-(55, 'Fish Sauce', 5000.00, 6),
-(56, 'Fried Egg', 1000.00, 6),
-(57, 'Bonolice Sauce', 4000.00, 6),
-(58, 'Poundo', 1500.00, 7),
-(59, 'Garri', 1500.00, 7),
-(60, 'Semovita', 1500.00, 7),
-(61, 'Wheat', 1500.00, 7),
-(62, 'Amala', 1500.00, 7),
-(63, 'Plantain Flour', 1500.00, 7),
-(64, 'Pounded Yam', 1500.00, 7),
-(65, 'Banga Soup with Dry Fish', 4000.00, 8),
-(66, 'Oha Soup', 3000.00, 8),
-(67, 'Afang Soup', 3000.00, 8),
-(68, 'White Soup/Fresh Fish', 7500.00, 8),
-(69, 'White Soup with Chicken', 6500.00, 8),
-(70, 'Egusi Soup', 3000.00, 8),
-(71, 'Ogbanno Soup', 3000.00, 8),
-(72, 'Bitter Leaf Soup', 3000.00, 8),
-(73, 'Vegetable Soup', 3000.00, 8),
-(74, 'Okra Soup', 3000.00, 8),
-(75, 'Sea Food Okra', 7500.00, 8),
-(76, 'Ewedu Soup', 3000.00, 8),
-(77, 'Catfish Pepper Soup', 5000.00, 9),
-(78, 'Croacker Fish Pepper Soup', 6000.00, 9),
-(79, 'Tilapia Fish Pepper Soup', 7000.00, 9),
-(80, 'Assorted', 3500.00, 9),
-(81, 'Cow Leg Pepper Soup', 3500.00, 9),
-(82, 'Chicken Pepper Soup', 3500.00, 9),
-(83, 'Goat Meat Pepper Soup', 3500.00, 9),
-(84, 'Full Goat Head Pepper Soup', 8000.00, 9),
-(85, 'Isiewu', 8000.00, 10),
-(86, 'Nkwobi', 5000.00, 10),
-(87, 'Abacha', 3500.00, 10),
-(88, 'Chicken Vegetables (Full Chicken)', 10000.00, 10),
-(89, 'Ugba & Kpomo', 2500.00, 10),
-(90, 'Isiewu', 8000.00, 10),
-(91, 'Nkwobi', 5000.00, 10),
-(92, 'Abacha', 3500.00, 10),
-(93, 'Chicken Vegetables (Full Chicken)', 10000.00, 10),
-(94, 'Ugba & Kpomo', 2500.00, 10),
-(95, 'Fried Yam', 2000.00, 11),
-(96, 'Fried Chips', 2000.00, 11),
-(97, 'Salted Potato (Small)', 3500.00, 11),
-(98, 'Salted Potato (Large)', 6500.00, 11),
-(99, 'Shredded Chicken', 7000.00, 11),
-(100, 'Fried Plantains', 1500.00, 11),
-(101, 'Pepper Beef', 3500.00, 12),
-(102, 'Pepper Goat', 3500.00, 12),
-(103, 'Pepper Chicken', 3500.00, 12),
-(104, 'Pepper Snail', 4000.00, 12),
-(105, 'Village Ram Chop', 4000.00, 12),
-(106, 'Pepper Titus Fish', 3500.00, 12),
-(107, 'Sallah Ram', 4000.00, 12),
-(108, 'Village Fish', 6000.00, 12),
-(109, 'Honey BBQ Turkey', 4500.00, 12),
-(110, 'Honey BBQ Chicken', 4500.00, 12),
-(111, 'Pepper Turkey', 4500.00, 12),
-(112, 'Pepper Chicken Drown Stick', 3500.00, 12),
-(113, 'Pepper Croacker (Medium)', 5000.00, 12),
-(114, 'Pepper Croacker (Large)', 8000.00, 12),
-(115, 'Pepper Tilapia', 8000.00, 12),
-(116, 'Chicken Shawarma', 4500.00, 13),
-(117, 'Beef Shawarma', 4500.00, 13),
-(118, 'Fish Shawarma', 4500.00, 13),
-(119, 'Vegetable Roll', 4500.00, 13),
-(120, 'Arabian Tea', 4000.00, 14),
-(121, 'Lemon Tea', 4000.00, 14),
-(122, 'Green Tea', 4000.00, 14),
-(123, 'Nice Coffee', 4000.00, 14),
-(124, 'Fresh Ginger Tea', 4000.00, 14),
-(125, 'Ginger Your Swagger', 4000.00, 14),
-(126, 'Clear Throat', 4000.00, 14),
-(127, 'Lipton Tea', 2000.00, 14),
-(128, 'Catfish Barbeque (Medium)', 8000.00, 15),
-(129, 'Catfish Barbeque (Large)', 9000.00, 15),
-(130, 'Catfish Barbeque (Extra Large)', 12000.00, 15),
-(131, 'Croacker Fish Barbeque (Medium)', 8000.00, 15),
-(132, 'Croacker Fish Barbeque (Large)', 9000.00, 15),
-(133, 'Croacker Fish Barbeque (Extra Large)', 12000.00, 15),
-(134, 'Tilapia Fish (Medium)', 8000.00, 15),
-(135, 'Tilapia Fish (Large)', 9000.00, 15),
-(136, 'Tilapia Fish (Extra Large)', 12000.00, 15),
-(137, 'Titus Fish Grill', 4000.00, 15),
-(138, 'Chicken Barbeque', 14000.00, 15),
-(139, 'Grill Turkey Wings', 4500.00, 15),
-(140, 'Yogi Grill Chicken', 15000.00, 15),
-(141, 'Chicken Pampelimpe', 15000.00, 15),
-(142, 'Ram Suya', 4000.00, 15),
-(143, 'Grill Chicken Drown Stick', 4000.00, 15),
-(144, 'Dry Meat Balls', 3000.00, 15),
-(145, 'Dry Fish Balls', 9000.00, 15);
+INSERT INTO `menu_items` (`id`, `name`, `category_id`) VALUES
+(4, 'English Breakfast', 1),
+(5, 'French Breakfast', 1),
+(6, 'American Breakfast', 1),
+(7, 'Tacos', 1),
+(8, 'Fettuccine Alfredo', 1),
+(9, 'Egg Sandwich', 1),
+(10, 'Tomato with 3 eggs', 1),
+(11, 'Jollof Rice', 2),
+(12, 'White Rice', 2),
+(13, 'Basmatics White Rice', 2),
+(14, 'Fried Rice Coleslaw', 2),
+(15, 'Chinese Fried Rice', 2),
+(16, 'Coconut Rice', 2),
+(17, 'Palm Oil Rice/Dry Fish', 2),
+(18, 'Spaghetti Jollof', 2),
+(19, 'Porridge Beans/Plantain', 2),
+(20, 'Porridge Yam/Dry Fish', 2),
+(21, 'Jambalaya Rice', 2),
+(22, 'French Rice', 2),
+(23, 'Colombia Rice', 2),
+(24, 'Ghana Jollof Rice', 2),
+(25, 'Egg Rice', 2),
+(26, 'Egg Rice Special', 2),
+(27, 'Fried Rice Special', 2),
+(28, 'Ofada Rice/Sauce', 2),
+(29, 'Fried Rice Local', 2),
+(30, 'Jollof Spaghetti', 3),
+(31, 'Village Spaghetti', 3),
+(32, 'Spaghetti BTC', 3),
+(33, 'Chicken Spaghetti', 3),
+(34, 'Mix Spaghetti with Extra Vegetables', 3),
+(35, 'Spaghetti Bonolice', 3),
+(36, 'Seed Food Pasta', 3),
+(37, 'Sengapol Noodles', 4),
+(38, 'Indomie Chicken', 4),
+(39, 'Vegetable Noodles', 4),
+(40, 'Plain Noodles', 4),
+(41, 'Indomie with Sausage', 4),
+(42, 'Chicken Salad', 5),
+(43, 'Chicken Avocado', 5),
+(44, 'Salad', 5),
+(45, 'Russian Salad', 5),
+(46, 'Mix Broccoli Salad', 5),
+(47, 'Fish Salad', 5),
+(48, 'Fruit Salad', 5),
+(49, 'Egg Sauce', 6),
+(50, 'Red Oil Sauce', 6),
+(51, 'Vegetable Sauce', 6),
+(52, 'Chinese Sauce', 6),
+(53, 'Chicken Sauce', 6),
+(54, 'Goat Meat Sauce', 6),
+(55, 'Fish Sauce', 6),
+(56, 'Fried Egg', 6),
+(57, 'Bonolice Sauce', 6),
+(58, 'Poundo', 7),
+(59, 'Garri', 7),
+(60, 'Semovita', 7),
+(61, 'Wheat', 7),
+(62, 'Amala', 7),
+(63, 'Plantain Flour', 7),
+(64, 'Pounded Yam', 7),
+(65, 'Banga Soup with Dry Fish', 8),
+(66, 'Oha Soup', 8),
+(67, 'Afang Soup', 8),
+(68, 'White Soup/Fresh Fish', 8),
+(69, 'White Soup with Chicken', 8),
+(70, 'Egusi Soup', 8),
+(71, 'Ogbanno Soup', 8),
+(72, 'Bitter Leaf Soup', 8),
+(73, 'Vegetable Soup', 8),
+(74, 'Okra Soup', 8),
+(75, 'Sea Food Okra', 8),
+(76, 'Ewedu Soup', 8),
+(77, 'Catfish Pepper Soup', 9),
+(78, 'Croacker Fish Pepper Soup', 9),
+(79, 'Tilapia Fish Pepper Soup', 9),
+(80, 'Assorted', 9),
+(81, 'Cow Leg Pepper Soup', 9),
+(82, 'Chicken Pepper Soup', 9),
+(83, 'Goat Meat Pepper Soup', 9),
+(84, 'Full Goat Head Pepper Soup', 9),
+(85, 'Isiewu', 10),
+(86, 'Nkwobi', 10),
+(87, 'Abacha', 10),
+(88, 'Chicken Vegetables (Full Chicken)', 10),
+(89, 'Ugba & Kpomo', 10),
+(90, 'Isiewu', 10),
+(91, 'Nkwobi', 10),
+(92, 'Abacha', 10),
+(93, 'Chicken Vegetables (Full Chicken)', 10),
+(94, 'Ugba & Kpomo', 10),
+(95, 'Fried Yam', 11),
+(96, 'Fried Chips', 11),
+(97, 'Salted Potato (Small)', 11),
+(98, 'Salted Potato (Large)', 11),
+(99, 'Shredded Chicken', 11),
+(100, 'Fried Plantains', 11),
+(101, 'Pepper Beef', 12),
+(102, 'Pepper Goat', 12),
+(103, 'Pepper Chicken', 12),
+(104, 'Pepper Snail', 12),
+(105, 'Village Ram Chop', 12),
+(106, 'Pepper Titus Fish', 12),
+(107, 'Sallah Ram', 12),
+(108, 'Village Fish', 12),
+(109, 'Honey BBQ Turkey', 12),
+(110, 'Honey BBQ Chicken', 12),
+(111, 'Pepper Turkey', 12),
+(112, 'Pepper Chicken Drown Stick', 12),
+(113, 'Pepper Croacker (Medium)', 12),
+(114, 'Pepper Croacker (Large)', 12),
+(115, 'Pepper Tilapia', 12),
+(116, 'Chicken Shawarma', 13),
+(117, 'Beef Shawarma', 13),
+(118, 'Fish Shawarma', 13),
+(119, 'Vegetable Roll', 13),
+(120, 'Arabian Tea', 14),
+(121, 'Lemon Tea', 14),
+(122, 'Green Tea', 14),
+(123, 'Nice Coffee', 14),
+(124, 'Fresh Ginger Tea', 14),
+(125, 'Ginger Your Swagger', 14),
+(126, 'Clear Throat', 14),
+(127, 'Lipton Tea', 14),
+(128, 'Catfish Barbeque (Medium)', 15),
+(129, 'Catfish Barbeque (Large)', 15),
+(130, 'Catfish Barbeque (Extra Large)', 15),
+(131, 'Croacker Fish Barbeque (Medium)', 15),
+(132, 'Croacker Fish Barbeque (Large)', 15),
+(133, 'Croacker Fish Barbeque (Extra Large)', 15),
+(134, 'Tilapia Fish (Medium)', 15),
+(135, 'Tilapia Fish (Large)', 15),
+(136, 'Tilapia Fish (Extra Large)', 15),
+(137, 'Titus Fish Grill', 15),
+(138, 'Chicken Barbeque', 15),
+(139, 'Grill Turkey Wings', 15),
+(140, 'Yogi Grill Chicken', 15),
+(141, 'Chicken Pampelimpe', 15),
+(142, 'Ram Suya', 15),
+(143, 'Grill Chicken Drown Stick', 15),
+(144, 'Dry Meat Balls', 15),
+(145, 'Dry Fish Balls', 15);
 
 -- --------------------------------------------------------
 
@@ -613,13 +616,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `bar_orders`
 --
 ALTER TABLE `bar_orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
 
 --
 -- AUTO_INCREMENT for table `bookings`
 --
 ALTER TABLE `bookings`
-  MODIFY `booking_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=202;
+  MODIFY `booking_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=203;
 
 --
 -- AUTO_INCREMENT for table `categories`
@@ -637,7 +640,7 @@ ALTER TABLE `categories_bar`
 -- AUTO_INCREMENT for table `guests`
 --
 ALTER TABLE `guests`
-  MODIFY `guest_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=159;
+  MODIFY `guest_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=160;
 
 --
 -- AUTO_INCREMENT for table `imprest_requests`
@@ -655,7 +658,7 @@ ALTER TABLE `imprest_requests_bar`
 -- AUTO_INCREMENT for table `kitchen_orders`
 --
 ALTER TABLE `kitchen_orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
 
 --
 -- AUTO_INCREMENT for table `menu_items`
