@@ -120,7 +120,7 @@ if (DateTime::createFromFormat('Y-m-d', $selected_date) === false) {
 
 // Fetch orders based on the selected date
 function fetchOrders($conn, $selected_date) {
-    $query = "SELECT id, room_number, order_description, total_amount, special_instructions, status, timestamp 
+    $query = "SELECT id, room_number, order_description, quantity, total_amount, special_instructions, status, timestamp 
               FROM bar_orders 
               WHERE DATE(timestamp) = ? 
               ORDER BY timestamp DESC";

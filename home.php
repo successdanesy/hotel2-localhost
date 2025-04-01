@@ -140,24 +140,28 @@ $stmt_bar->close();
                 <section class="bar-order">
                     <h2>Bar Order - Antilla Apartments & Suites</h2>
                     <table id="bar-orders">
-                        <tr>
-                            <th>Room Number</th>
-                            <th>Order Description</th>
-                            <th>Total Amount (₦)</th>
-                            <th>Status</th>
-                            <th>Special Instructions</th>
-                        </tr>
-                        <?php
+                <tr>
+                        <th>Room Number</th>
+                        <th>Order Description</th>
+                        <th>Quantity</th> <!-- ✅ Added Quantity Column -->
+                        <th>Total Amount (₦)</th>
+                        <th>Status</th>
+                        <th>Special Instructions</th>
+                </tr>
+                <?php
+
                             if ($result_bar->num_rows > 0) {
                                 while ($order = $result_bar->fetch_assoc()) {
                                     echo "<tr>";
                                     echo "<td>" . htmlspecialchars($order['room_number']) . "</td>";
                                     echo "<td>" . htmlspecialchars($order['order_description']) . "</td>";
+                                    echo "<td>" . htmlspecialchars(string: $order['quantity'] . 'N/A') . "</td>"; // ✅ Show Quantity
                                     echo "<td>" . number_format($order['total_amount'], 2) . "</td>";
                                     echo "<td>" . htmlspecialchars($order['status']) . "</td>";
                                     echo "<td>" . htmlspecialchars($order['special_instructions']) . "</td>";
                                     echo "</tr>";
                                 }
+
                             } else {
                                 echo "<tr><td colspan='5'>No bar orders available for the selected date.</td></tr>";
                             }
